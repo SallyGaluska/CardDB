@@ -1,0 +1,17 @@
+Database design has been simplified and focused. Foil cards and languages have been removed from the design because I own very few foil or foreign language cards. Removed information that stores cards as game objects. There's a lot of resources online for that that are way better than what I could make, anyway
+Added table to track my personal collection. Whenever anything is deleted from this table, it goes to another table, cards_traded_away. Both tables have their values tracked over time in two more tables.
+
+Questions I'd like to answer:
+What's the price of my card right now? that should be stored in card_sets, as "price".
+What's the total value of my collection right now? What was it two weeks ago? What was it a year ago?
+Using the data from both of the over_time tables, how does the value of my collection compare to the value of the cards I've traded away? Am I making good trades or bad trades?
+
+Triggers and Transactions:
+Whenever a card is deleted from my collection, move it over to cards_traded_away. Make this into a transaction so that cards can't be in two places at once
+
+Events:
+Collection_price_over_time and traded_away_price_over_time
+Every week, sum up the value of these tables and insert them into another two tables.
+
+Procedures/Functions:
+Querying the current price of a card is the main function of this database. It will be made into a procedure or function.

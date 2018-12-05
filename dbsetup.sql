@@ -71,19 +71,19 @@ ALTER TABLE `cards_traded_away` ADD FOREIGN KEY (card_set_id) REFERENCES `card_s
 
 /*loading in the data*/
 
-LOAD data local infile '/home/student/Documents/CardDB/AllCardsIncludingUnsets'
+LOAD data local infile './AllCardsIncludingUnsets'
 IGNORE INTO TABLE MagicCards.cards
 FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'
 (card_name);
 
-LOAD data local infile '/home/student/Documents/CardDB/allsets'
+LOAD data local infile './allsets'
 IGNORE INTO TABLE MagicCards.sets
 FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'
 (set_code, set_name);
 
-LOAD data local infile '/home/student/Documents/CardDB/prices_of_my_collection.csv'
+LOAD data local infile './prices_of_my_collection.csv'
 IGNORE INTO TABLE my_collection_temp
 FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"';
@@ -103,13 +103,24 @@ JOIN cards on cards.card_name=mct.name
 JOIN sets on sets.set_code=mct.set_code
 JOIN card_sets as cs on cs.card_id=cards.card_id and cs.set_id=sets.set_id;
 
-/*trigger. just one. knock points off if you have to. I could make my database make less sense and be less intuitive to add another trigger and get full points but I don't feel like being a bad programmer today.*/
+/*triggers*/
+
 delimiter $
 CREATE TRIGGER moveDeletedToTraded BEFORE DELETE ON my_collection
 FOR EACH ROW BEGIN
 INSERT INTO cards_traded_away(card_set_id, quantity)
 values(OLD.card_set_id, OLD.quantity);
 END$
+delimiter ;
+
+delimiter $
+CREATE TRIGGER moveReducedQuantityToTraded BEFORE UPDATE ON my_collection
+FOR EACH ROW BEGIN
+IF OLD.quantity>NEW.quantity THEN
+  INSERT INTO cards_traded_away(card_set_id, quantity)
+  values(old.card_set_id, OLD.quantity-NEW.quantity);
+END IF;
+END $
 delimiter ;
 
 /*deleting a record from my_collection so that the "cardstradedaway" table has data*/

@@ -163,6 +163,8 @@ CREATE USER "viewsonly"@"localhost" identified by "Viewsonlypass 1";
 GRANT select on MagicCards.your_collection to "viewsonly"@"localhost";
 GRANT select on MagicCards.your_cards_traded_away to "viewsonly"@"localhost";
 
+/*Procedures and Functions*/
+
 /*Deleting from my_collection activates a trigger which moves the card info to "Cards_Traded_Away"*/
 delimiter $
 CREATE PROCEDURE deleteFromCollection(card_name_to_delete varchar(141), set_code_to_delete varchar(7))

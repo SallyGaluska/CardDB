@@ -1,9 +1,11 @@
+DROP DATABASE IF EXISTS MagicCards;
+CREATE DATABASE MagicCards CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 use MagicCards;
 
 DROP TABLE IF EXISTS my_collection_temp;
 CREATE TABLE my_collection_temp(
 name varchar(141),
-setcode varchar(4),
+set_code varchar(4),
 quantity int unsigned,
 price decimal(10,2)
 )engine = InnoDB DEFAULT CHARSET utf8mb4 collate=utf8mb4_unicode_ci;
@@ -17,7 +19,7 @@ card_name varchar(141)
 DROP TABLE IF EXISTS sets;
 CREATE TABLE sets(
 set_id int UNSIGNED not null primary key auto_increment,
-set_code varchar(5),
+set_code varchar(7),
 set_name varchar(50)
 )engine = InnoDB Default Charset utf8mb4 collate=utf8mb4_unicode_ci;
 

@@ -6,3 +6,6 @@ JOIN sets ON sets.set_id=cs.set_id
 WHERE card_name="Sol Ring";
 
 
+/*These two queries test the functionality of the moveReducedQuantityToTraded. The first one reduces the quantity from 4 to 2. The trigger triggers, the if statement evaulates to true, and the trigger performs an insert. The second one still triggers the trigger, but the if statment evaluates to false, so it doesn't do anything.*/
+update my_collection quantity=2 where card_set_id=31;
+update my_collection quantity=3 where card_set_id=30;

@@ -15,14 +15,14 @@ price decimal(10,2)
 DROP TABLE IF EXISTS cards;
 CREATE TABLE cards(
 card_id int UNSIGNED not null primary key auto_increment,
-card_name varchar(141)
+card_name varchar(141) UNIQUE
 )engine = InnoDB DEFAULT CHARSET utf8mb4 collate=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS sets;
 CREATE TABLE sets(
 set_id int UNSIGNED not null primary key auto_increment,
-set_code varchar(7),
-set_name varchar(50)
+set_code varchar(7) UNIQUE,
+set_name varchar(50) UNIQUE
 )engine = InnoDB Default Charset utf8mb4 collate=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS card_sets;
@@ -31,13 +31,14 @@ card_set_id INT UNSIGNED not null primary key auto_increment,
 card_id INT UNSIGNED,
 set_id INT UNSIGNED,
 price decimal(10,2),
-date_last_updated DATETIME
+date_last_updated DATETIME,
+UNIQUE(card_id, set_id)
 )engine = InnoDB DEFAULT CHARSET utf8mb4 collate=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS my_collection;
 CREATE TABLE my_collection(
 my_collection_id int UNSIGNED not null primary key auto_increment,
-card_set_id int unsigned,
+card_set_id int unsigned UNIQUE,
 quantity INT UNSIGNED
 )engine = InnoDB DEFAULT CHARSET utf8mb4 collate=utf8mb4_unicode_ci;
 
@@ -51,7 +52,7 @@ sum_snapshot_date DATETIME
 DROP TABLE IF EXISTS cards_traded_away;
 CREATE TABLE cards_traded_away(
 card_traded_away_id int UNSIGNED not null primary key auto_increment,
-card_set_id int unsigned,
+card_set_id int unsigned UNIQUE,
 quantity INT UNSIGNED
 )engine = InnoDB DEFAULT CHARSET utf8mb4 collate=utf8mb4_unicode_ci;
 
@@ -122,15 +123,6 @@ IF OLD.quantity>NEW.quantity THEN
 END IF;
 END $
 delimiter ;
-
-/*deleting a record from my_collection so that the "cardstradedaway" table has data*/
-DELETE FROM my_collection where my_collection.card_set_id=
-(SELECT mccsi from
-(SELECT mc.card_set_id as mccsi FROM my_collection as mc
-JOIN card_sets as cs ON mc.card_set_id=cs.card_set_id
-JOIN cards on cards.card_id=cs.card_id
-JOIN sets on sets.set_id=cs.set_id
-WHERE card_name="Sol Ring" and set_code="3ed")as thisisonlyheretomakesqlhappy);
 
 /*please don't think too much about the number that gets inserted into my_collection_price_over_time whenever this event runs. I promise I haven't actually spent that much on pieces of cardboard...*/
 delimiter $

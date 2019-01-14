@@ -76,6 +76,7 @@ LOAD data local infile './AllCardsIncludingUnsets'
 IGNORE INTO TABLE MagicCards.cards
 FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'
+ESCAPED BY '\\'
 (card_name);
 
 LOAD data local infile './allsets'
